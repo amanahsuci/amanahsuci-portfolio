@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/src/lib/prisma';
 import { isAuthenticated } from '@/src/lib/auth';
 
-// GET /api/admin/skills/[id] — ambil satu skill
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     if (!isAuthenticated(req)) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -25,7 +24,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 }
 
-// PUT /api/admin/skills/[id] — update skill
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     if (!isAuthenticated(req)) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -56,7 +54,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 }
 
-// DELETE /api/admin/skills/[id] — hapus skill
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     if (!isAuthenticated(req)) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

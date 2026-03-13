@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/src/lib/prisma';  
 import { isAuthenticated } from '@/src/lib/auth';
 
-// GET /api/admin/projects — ambil semua project
 export async function GET(req: NextRequest) {
     if (!isAuthenticated(req)) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,7 +18,6 @@ export async function GET(req: NextRequest) {
     }
 }
 
-// POST /api/admin/projects — tambah project baru
 export async function POST(req: NextRequest) {
     if (!isAuthenticated(req)) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -29,7 +27,6 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { title, description, techStack, imageUrl, githubUrl, liveUrl, featured, order } = body;
 
-        // Validasi field wajib
         if (!title || !description) {
         return NextResponse.json({ error: "Title and description are required" }, { status: 400 });
         }

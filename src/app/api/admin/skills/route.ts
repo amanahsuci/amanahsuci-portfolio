@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/src/lib/prisma';
 import { isAuthenticated } from '@/src/lib/auth';
 
-// GET /api/admin/skills — ambil semua skill
 export async function GET(req: NextRequest) {
   if (!isAuthenticated(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,7 +18,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/admin/skills — tambah skill baru
 export async function POST(req: NextRequest) {
   if (!isAuthenticated(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
     const { password } = await req.json()
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({ success: true })
     response.cookies.set("admin_token", process.env.ADMIN_PASSWORD!, {
         httpOnly: true,
-        maxAge: 60 * 60 * 24, // 1 hari
+        maxAge: 60 * 60 * 24, 
     })
 
     return response

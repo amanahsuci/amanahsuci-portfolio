@@ -12,7 +12,7 @@ export default function AdminLogin() {
     async function handleLogin() {
         setIsLoading(true);
         setError('');
-        const res = await fetch('api/admin/login', {
+        const res = await fetch('/api/admin/login', {
             method: 'POST',
             body: JSON.stringify({ password }),
             headers: {
@@ -20,7 +20,7 @@ export default function AdminLogin() {
             },
         });
         if (res.ok) {
-            router.push('admin/dashboard');
+            router.push('/admin/dashboard');
         } else {
             setError('Invalid password');
             setPassword('');
