@@ -8,16 +8,15 @@ export default function AdminDashboard() {
     const router = useRouter();
 
     useEffect(() => {
-        // Cek apakah cookie admin_token ada
-        const hasCookie = document.cookie.includes('admin_token');
-        if (!hasCookie) {
-            router.push('/admin');
-        }
-    }, []);
+        fetch('/api/admin/verify')
+            .then(res => {
+                if (!res.ok) router.push('/admin');
+            })
+    })
 
-    const handleLogout = () => {
-        document.cookie = 'admin_token=; MaxAge=0; path=/;';
-        
+    const handleLogout = async () => {
+        await fetch('/api/adminlogout', { method: 'POST' });
+
         router.push('/')
     }
     return (
