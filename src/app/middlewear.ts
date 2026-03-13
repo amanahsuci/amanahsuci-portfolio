@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
 
     if (pathname.startsWith('/admin') && pathname !== '/admin') {
         const token = request.cookies.get('admin_token');
-        if (!token) {
+        if (!token || !token.value) {
             return NextResponse.redirect(new URL('/admin', request.url));
         }
     }
