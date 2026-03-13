@@ -11,6 +11,9 @@ export async function POST(req: NextRequest) {
     response.cookies.set("admin_token", process.env.ADMIN_PASSWORD!, {
         httpOnly: true,
         maxAge: 60 * 60 * 24, 
+        secure: true,
+        sameSite: "lax",
+        path: "/",
     })
 
     return response

@@ -1,14 +1,23 @@
 'use client'
 
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
     const router = useRouter();
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
+    useEffect(() => {
+        // Cek apakah cookie admin_token ada
+        const hasCookie = document.cookie.includes('admin_token');
+        if (!hasCookie) {
+            router.push('/admin');
+        }
+    }, []);
 
+    const handleLogout = () => {
+        document.cookie = 'admin_token=; MaxAge=0; path=/;';
+        
         router.push('/')
     }
     return (
