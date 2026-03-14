@@ -1,18 +1,10 @@
 'use client'
 
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
     const router = useRouter();
-
-    useEffect(() => {
-        fetch('/api/admin/verify')
-            .then(res => {
-                if (!res.ok) router.push('/admin');
-            })
-    })
 
     const handleLogout = async () => {
         await fetch('/api/admin/logout', { method: 'POST' });
