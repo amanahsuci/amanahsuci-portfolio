@@ -7,7 +7,7 @@ export default async function AdminDashboard() {
     const allCookies = cookieStore.getAll();
     console.log('All cookies on dashboard:', JSON.stringify(allCookies));
     
-    const auth = cookieStore.get('auth');
+    const auth = cookieStore.get('admin_token');
     console.log('Auth cookie:', auth);
     
     if (!auth) {

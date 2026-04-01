@@ -5,11 +5,18 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 type Project = {
-  id: number;
+  id: string;
+  slug: string;
   title: string;
   description: string;
+  background: string | null;
+  method: string | null;
+  result: string | null;
+  images: string[];
+  organization: string | null;
+  startDate: string | null;
+  endDate: string | null;
   techStack: string[];
-  imageUrl: string | null;
   githubUrl: string | null;
   liveUrl: string | null;
   featured: boolean;
@@ -17,10 +24,17 @@ type Project = {
 };
 
 const emptyForm = {
+  slug: '',
   title: '',
   description: '',
+  background: '',
+  method: '',
+  result: '',
+  images: '',
+  organization: '',
+  startDate: '',
+  endDate: '',
   techStack: '',
-  imageUrl: '',
   githubUrl: '',
   liveUrl: '',
   featured: false,
@@ -32,15 +46,12 @@ export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
-
-  // Modal state
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState('');
 
-  // ── FETCH ──
   const fetchProjects = async () => {
     setLoading(true);
     try {
@@ -56,7 +67,6 @@ export default function AdminProjects() {
 
   useEffect(() => { fetchProjects(); }, []);
 
-  // ── OPEN MODAL ──
   const openAdd = () => {
     setEditingProject(null);
     setForm(emptyForm);
@@ -67,10 +77,17 @@ export default function AdminProjects() {
   const openEdit = (project: Project) => {
     setEditingProject(project);
     setForm({
+      slug: project.slug,
       title: project.title,
       description: project.description,
+      background: project.background ?? '',
+      method: project.method ?? '',
+      result: project.result ?? '',
+      images: project.images.join(', '),
+      organization: project.organization ?? '',
+      startDate: project.startDate ?? '',
+      endDate: project.endDate ?? '',
       techStack: project.techStack.join(', '),
-      imageUrl: project.imageUrl ?? '',
       githubUrl: project.githubUrl ?? '',
       liveUrl: project.liveUrl ?? '',
       featured: project.featured,
@@ -80,10 +97,9 @@ export default function AdminProjects() {
     setModalOpen(true);
   };
 
-  // ── SUBMIT (ADD / EDIT) ──
   const handleSubmit = async () => {
-    if (!form.title.trim() || !form.description.trim()) {
-      setError('Title dan description wajib diisi.');
+    if (!form.title.trim() || !form.description.trim() || !form.slug.trim()) {
+      setError('Title, slug, dan description wajib diisi.');
       return;
     }
 
@@ -91,10 +107,17 @@ export default function AdminProjects() {
     setError('');
 
     const payload = {
+      slug: form.slug.trim(),
       title: form.title.trim(),
       description: form.description.trim(),
+      background: form.background.trim() || null,
+      method: form.method.trim() || null,
+      result: form.result.trim() || null,
+      images: form.images.split(',').map(s => s.trim()).filter(Boolean),
+      organization: form.organization.trim() || null,
+      startDate: form.startDate.trim() || null,
+      endDate: form.endDate.trim() || null,
       techStack: form.techStack.split(',').map(s => s.trim()).filter(Boolean),
-      imageUrl: form.imageUrl.trim() || null,
       githubUrl: form.githubUrl.trim() || null,
       liveUrl: form.liveUrl.trim() || null,
       featured: form.featured,
@@ -126,8 +149,7 @@ export default function AdminProjects() {
     }
   };
 
-  // ── DELETE ──
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     setDeleteId(id);
     try {
       await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
@@ -139,7 +161,6 @@ export default function AdminProjects() {
     }
   };
 
-  // ── LOGOUT ──
   const handleLogout = () => {
     router.push('/');
   };
@@ -147,7 +168,6 @@ export default function AdminProjects() {
   return (
     <div className="relative min-h-screen bg-black overflow-hidden">
 
-      {/* ── NAV ── */}
       <nav className="relative z-10 px-8 py-4 flex justify-between items-center border-b border-white/10 bg-white/5 backdrop-blur-2xl shadow-lg shadow-black/20">
         <div className="flex items-center gap-3">
           <Link href="/admin/dashboard" className="text-white/40 hover:text-white transition-colors">
@@ -169,10 +189,7 @@ export default function AdminProjects() {
         </button>
       </nav>
 
-      {/* ── CONTENT ── */}
       <div className="relative z-10 max-w-4xl mx-auto py-12 px-4">
-
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-white tracking-tight">Projects</h2>
@@ -191,27 +208,18 @@ export default function AdminProjects() {
           </button>
         </div>
 
-        {/* Loading */}
         {loading && (
           <div className="flex items-center justify-center py-24">
             <div className="w-6 h-6 rounded-full border-2 border-white/10 border-t-indigo-400 animate-spin" />
           </div>
         )}
 
-        {/* Empty */}
         {!loading && projects.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 gap-3 border border-white/10 rounded-2xl bg-white/5">
-            <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" opacity="0.3">
-                <rect x="2" y="3" width="20" height="14" rx="2" />
-                <path d="M8 21h8M12 17v4" />
-              </svg>
-            </div>
             <p className="text-white/30 text-sm">Belum ada project. Klik "Add Project" untuk mulai.</p>
           </div>
         )}
 
-        {/* Project List */}
         {!loading && projects.length > 0 && (
           <div className="flex flex-col gap-3">
             {projects.map(project => (
@@ -243,7 +251,6 @@ export default function AdminProjects() {
                   )}
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => openEdit(project)}
@@ -279,87 +286,137 @@ export default function AdminProjects() {
         )}
       </div>
 
-      {/* ── MODAL ADD / EDIT ── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setModalOpen(false)}
-          />
-
-          {/* Modal box */}
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
           <div className="relative w-full max-w-lg bg-[#0d0d0d] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
 
-            {/* Modal header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
               <h3 className="text-sm font-semibold text-white">
                 {editingProject ? 'Edit Project' : 'Add Project'}
               </h3>
-              <button
-                onClick={() => setModalOpen(false)}
-                className="text-white/30 hover:text-white transition-colors"
-              >
+              <button onClick={() => setModalOpen(false)} className="text-white/30 hover:text-white transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
-            {/* Modal body */}
             <div className="px-6 py-5 flex flex-col gap-4 max-h-[65vh] overflow-y-auto">
-
               {error && (
-                <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
-                  {error}
-                </div>
+                <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs">{error}</div>
               )}
+
+              {/* Slug */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-white/40 font-medium">Slug <span className="text-red-400">*</span></label>
+                <input type="text" value={form.slug}
+                  onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
+                  placeholder="e.g. tics-cinema"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                />
+              </div>
 
               {/* Title */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs text-white/40 font-medium">Title <span className="text-red-400">*</span></label>
-                <input
-                  type="text"
-                  value={form.title}
+                <input type="text" value={form.title}
                   onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                  placeholder="e.g. E-Commerce Platform"
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all"
+                  placeholder="e.g. TICS Cinema"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
                 />
               </div>
 
               {/* Description */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs text-white/40 font-medium">Description <span className="text-red-400">*</span></label>
-                <textarea
-                  value={form.description}
+                <textarea value={form.description}
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                   placeholder="Deskripsi singkat project..."
                   rows={3}
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all resize-none"
                 />
+              </div>
+
+              {/* Background */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-white/40 font-medium">Background</label>
+                <textarea value={form.background}
+                  onChange={e => setForm(f => ({ ...f, background: e.target.value }))}
+                  placeholder="Konteks / latar belakang project..."
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all resize-none"
+                />
+              </div>
+
+              {/* Method */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-white/40 font-medium">Method / Strategy</label>
+                <textarea value={form.method}
+                  onChange={e => setForm(f => ({ ...f, method: e.target.value }))}
+                  placeholder="Pendekatan / strategi yang digunakan..."
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all resize-none"
+                />
+              </div>
+
+              {/* Result */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-white/40 font-medium">Result / Output</label>
+                <textarea value={form.result}
+                  onChange={e => setForm(f => ({ ...f, result: e.target.value }))}
+                  placeholder="Hasil yang dicapai..."
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all resize-none"
+                />
+              </div>
+
+              {/* Images */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-white/40 font-medium">Images (pisahkan dengan koma)</label>
+                <textarea value={form.images}
+                  onChange={e => setForm(f => ({ ...f, images: e.target.value }))}
+                  placeholder="https://img1.com, https://img2.com"
+                  rows={2}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all resize-none"
+                />
+              </div>
+
+              {/* Organization, Start, End */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-white/40 font-medium">Organization</label>
+                  <input type="text" value={form.organization}
+                    onChange={e => setForm(f => ({ ...f, organization: e.target.value }))}
+                    placeholder="RevoU"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-white/40 font-medium">Start Date</label>
+                  <input type="text" value={form.startDate}
+                    onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
+                    placeholder="Jul 2025"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs text-white/40 font-medium">End Date</label>
+                  <input type="text" value={form.endDate}
+                    onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))}
+                    placeholder="Aug 2025"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
+                  />
+                </div>
               </div>
 
               {/* Tech Stack */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-white/40 font-medium">Tech Stack</label>
-                <input
-                  type="text"
-                  value={form.techStack}
+                <label className="text-xs text-white/40 font-medium">Tech Stack (pisahkan dengan koma)</label>
+                <input type="text" value={form.techStack}
                   onChange={e => setForm(f => ({ ...f, techStack: e.target.value }))}
-                  placeholder="React, TypeScript, Next.js (pisahkan dengan koma)"
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all"
-                />
-              </div>
-
-              {/* Image URL */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-white/40 font-medium">Image URL</label>
-                <input
-                  type="text"
-                  value={form.imageUrl}
-                  onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))}
-                  placeholder="https://..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all"
+                  placeholder="React, TypeScript, Next.js"
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
                 />
               </div>
 
@@ -367,22 +424,18 @@ export default function AdminProjects() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs text-white/40 font-medium">GitHub URL</label>
-                  <input
-                    type="text"
-                    value={form.githubUrl}
+                  <input type="text" value={form.githubUrl}
                     onChange={e => setForm(f => ({ ...f, githubUrl: e.target.value }))}
                     placeholder="https://github.com/..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs text-white/40 font-medium">Live URL</label>
-                  <input
-                    type="text"
-                    value={form.liveUrl}
+                  <input type="text" value={form.liveUrl}
                     onChange={e => setForm(f => ({ ...f, liveUrl: e.target.value }))}
                     placeholder="https://..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500/50 transition-all"
                   />
                 </div>
               </div>
@@ -391,11 +444,9 @@ export default function AdminProjects() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs text-white/40 font-medium">Order</label>
-                  <input
-                    type="number"
-                    value={form.order}
+                  <input type="number" value={form.order}
                     onChange={e => setForm(f => ({ ...f, order: Number(e.target.value) }))}
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-all"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -403,9 +454,7 @@ export default function AdminProjects() {
                   <button
                     onClick={() => setForm(f => ({ ...f, featured: !f.featured }))}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
-                      form.featured
-                        ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
-                        : 'bg-white/5 border-white/10 text-white/40'
+                      form.featured ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300' : 'bg-white/5 border-white/10 text-white/40'
                     }`}
                   >
                     <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all ${
@@ -421,29 +470,19 @@ export default function AdminProjects() {
                   </button>
                 </div>
               </div>
-
             </div>
 
-            {/* Modal footer */}
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-white/10">
-              <button
-                onClick={() => setModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/5 transition-all"
-              >
+              <button onClick={() => setModalOpen(false)} className="px-4 py-2 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/5 transition-all">
                 Cancel
               </button>
-              <button
-                onClick={handleSubmit}
-                disabled={submitting}
+              <button onClick={handleSubmit} disabled={submitting}
                 className="flex items-center gap-2 px-5 py-2 rounded-xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-sm font-semibold hover:bg-indigo-500/30 transition-all disabled:opacity-50"
               >
-                {submitting && (
-                  <div className="w-3.5 h-3.5 rounded-full border border-indigo-300/30 border-t-indigo-300 animate-spin" />
-                )}
+                {submitting && <div className="w-3.5 h-3.5 rounded-full border border-indigo-300/30 border-t-indigo-300 animate-spin" />}
                 {editingProject ? 'Save Changes' : 'Add Project'}
               </button>
             </div>
-
           </div>
         </div>
       )}

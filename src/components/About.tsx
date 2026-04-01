@@ -39,12 +39,10 @@ export default function About() {
             {/* Paragraf */}
             <div className="flex flex-col gap-4">
               <p className="text-sm text-white/50 font-[family-name:var(--font-dm)] leading-[1.95]">
-                {/* ── GANTI: paragraf pertama tentang dirimu ── */}
                 Hi! I'm <span className="text-white font-semibold">Suci</span>, I am an aspiring software engineer with a store manager background experienced in leading store operations who taught me to track data, optimize processes, and satisfaction goals. 
                 That operational mindset naturally evolved into a passion for building efficient digital systems, leading me to transition into software engineering through an intensive bootcamp experience.
               </p>
               <p className="text-sm text-white/50 font-[family-name:var(--font-dm)] leading-[1.95]">
-                {/* ── GANTI: paragraf kedua, cerita perjalananmu ── */}
                 During my Software Engineering bootcamp, I rely on JavaScript, Next.js, NestJS, PostgreSQL, Prisma ORM to craft responsive, high-performance applications with clean, maintainable component-based architectures and deliberate state management.
                 I am committed to continuous learning and to 
                 applying my technical skills to solve real-world problems and deliver value in every project.
@@ -68,13 +66,11 @@ export default function About() {
                 <div>
                   <p className="text-[10px] text-white/30 uppercase tracking-widest font-[family-name:var(--font-dm)]">Location</p>
                   <p className="text-sm text-white/70 font-[family-name:var(--font-dm)] font-medium">
-                    {/* ── GANTI: kota domisili kamu ── */}
                     Indonesia
                   </p>
                 </div>
               </div>
 
-              {/* Pendidikan */}
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-[#c9a84c]/10 border border-[#c9a84c]/20 flex items-center justify-center shrink-0">
                   <svg className="w-3.5 h-3.5 text-[#c9a84c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -85,19 +81,15 @@ export default function About() {
                 <div>
                   <p className="text-[10px] text-white/30 uppercase tracking-widest font-[family-name:var(--font-dm)]">Education</p>
                   <p className="text-sm text-white/70 font-[family-name:var(--font-dm)] font-medium">
-                    {/* ── GANTI: jurusan & universitas kamu ── */}
                     Full-Stack Software Engineering Program - RevoU
                   </p>
                   <p className="text-xs text-white/30 font-[family-name:var(--font-dm)]">
-                    {/* ── GANTI: tahun masuk - lulus ── */}
                     Feb 2025 - Aug 2025
                   </p>
                   <p className="text-sm text-white/70 font-[family-name:var(--font-dm)] font-medium">
-                    {/* ── GANTI: jurusan & universitas kamu ── */}
                     Sastra Inggris - Indonesia Open University
                   </p>
                   <p className="text-xs text-white/30 font-[family-name:var(--font-dm)]">
-                    {/* ── GANTI: tahun masuk - lulus ── */}
                     2022 - present
                   </p>
                 </div>
@@ -118,7 +110,6 @@ export default function About() {
                 </p>
               </div>
               <p className="text-sm text-white/60 font-[family-name:var(--font-dm)] leading-relaxed">
-                {/* ── GANTI: status kamu sekarang ── */}
                 Available and ready to take on new challenges — full-time, freelance, or collaborative projects. Let's talk.
               </p>
             </div>

@@ -4,7 +4,7 @@ import AdminSkillsClient from './client';
 
 export default async function AdminSkills() {
     const cookieStore = await cookies();
-    const auth = cookieStore.get('auth');
+    const auth = cookieStore.get('admin_token');
     
     if (!auth) {
         redirect('/admin');

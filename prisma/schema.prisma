@@ -14,11 +14,18 @@ datasource db {
 }
 
 model Projects {
-  id                Int              @id                  @default(autoincrement())
+  id                String           @id                  @default(cuid())
+  slug              String           @unique
   title             String
   description       String
-  techStack         String[]
-  imageUrl          String?
+  background        String?
+  method            String?
+  result            String?
+  images            String[]
+  organization      String?
+  startDate         String?
+  endDate           String?
+  techStack         String[]   
   githubUrl         String?
   liveUrl           String?
   featured          Boolean           @default(false)

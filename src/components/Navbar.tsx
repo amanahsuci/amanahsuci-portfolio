@@ -5,16 +5,46 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const NAV_LINKS = [
-    { label: "Home",     href: "#home" },
-    { label: "About",    href: "#about" },
-    { label: "Projects", href: "#projects" },
-    { label: "Skills",   href: "#skills" },
+    { label: "Home",     href: "home" },
+    { label: "About",    href: "about" },
+    { label: "Projects", href: "projects" },
+    { label: "Skills",   href: "skills" },
 ];
 
 export default function Navbar() {
     const [scrolled, setScrolled]     = useState(false);
     const [menuOpen, setMenuOpen]     = useState(false);
     const [activeLink, setActiveLink] = useState("Home");
+
+    useEffect(() => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '-40% 0px -40% 0px', // Mendeteksi saat section berada di tengah layar
+            threshold: 0,
+        };
+
+        const observerCallback = (entries: IntersectionObserverEntry[]) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    // Cari label yang sesuai dengan ID section yang sedang dilihat
+                    const currentLink = NAV_LINKS.find(link => link.href === entry.target.id);
+                    if (currentLink) {
+                        setActiveLink(currentLink.label);
+                    }
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        // Mulai mengamati setiap section
+        NAV_LINKS.forEach((link) => {
+            const element = document.getElementById(link.href);
+            if (element) observer.observe(element);
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
   // navbar background change while scrolling
     useEffect(() => {
@@ -51,7 +81,7 @@ export default function Navbar() {
             >
             {/* ── LOGO ── */}
                 <Link
-                    href="#home"
+                    href="home"
                     className="flex items-center gap-2.5 group"
                     onClick={() => setActiveLink("Home")}
                 >

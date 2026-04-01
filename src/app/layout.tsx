@@ -16,7 +16,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name — Portfolio",
+  title: "Amanah Suci",
   description: "Junior Software Engineer Portfolio",
 };
 
