@@ -201,7 +201,7 @@ export default async function ProjectDetailPage({
   if (!project) return notFound();
 
   return (
-    <main className="min-h-screen bg-[#0f0f0f] text-white">
+    <main className="min-h-screen text-white">
 
       {/* Ambient glow */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
