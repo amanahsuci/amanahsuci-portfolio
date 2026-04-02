@@ -5,10 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const NAV_LINKS = [
-    { label: "Home",     href: "home" },
-    { label: "About",    href: "about" },
-    { label: "Projects", href: "projects" },
-    { label: "Skills",   href: "skills" },
+    { label: "Home",     href: "home",      id: "home" },
+    { label: "About",    href: "about",     id: "about" },
+    { label: "Projects", href: "projects",  id: "projects" },
+    { label: "Skills",   href: "skills",    id: "skills" },
 ];
 
 export default function Navbar() {
@@ -19,14 +19,13 @@ export default function Navbar() {
     useEffect(() => {
         const observerOptions = {
             root: null,
-            rootMargin: '-40% 0px -40% 0px', // Mendeteksi saat section berada di tengah layar
+            rootMargin: '-40% 0px -40% 0px', // detect when section is roughly in the middle of the viewport
             threshold: 0,
         };
 
         const observerCallback = (entries: IntersectionObserverEntry[]) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    // Cari label yang sesuai dengan ID section yang sedang dilihat
                     const currentLink = NAV_LINKS.find(link => link.href === entry.target.id);
                     if (currentLink) {
                         setActiveLink(currentLink.label);
@@ -37,7 +36,7 @@ export default function Navbar() {
 
         const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-        // Mulai mengamati setiap section
+        // observe each section corresponding to nav links
         NAV_LINKS.forEach((link) => {
             const element = document.getElementById(link.href);
             if (element) observer.observe(element);
