@@ -41,3 +41,8 @@ body {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-14px); }
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--parchment); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
